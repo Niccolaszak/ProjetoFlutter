@@ -26,7 +26,8 @@ class ExpenseTile extends StatelessWidget {
           backgroundColor: categoryColor,
           child: Icon(Icons.receipt_long, color: Colors.white),
         ),
-        title: Text(categoryName),
+        title: Text(description),
+        subtitle: Text(categoryName),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

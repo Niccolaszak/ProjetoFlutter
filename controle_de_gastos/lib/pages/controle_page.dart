@@ -2,6 +2,7 @@ import 'package:controle_de_gastos/enums/category_type.dart';
 import 'package:controle_de_gastos/widgets/expense_tile.dart';
 import 'package:controle_de_gastos/widgets/summary_card.dart';
 import 'package:flutter/material.dart';
+import 'package:controle_de_gastos/models/expense.dart';
 
 class ControlePage extends StatefulWidget {
   const ControlePage({super.key});
@@ -11,6 +12,16 @@ class ControlePage extends StatefulWidget {
 }
 
 class _ControlePageState extends State<ControlePage> {
+  // Controladores para ler os TextFields
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+
+  // Categoria padrão selecionada no Dropdown
+  CategoryType _selectedCategory = CategoryType.alimentacao;
+
+  // Lista que vai armazenar todos os gastos
+  List<Expense> expenses = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,9 +110,27 @@ class _ControlePageState extends State<ControlePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 //adicionar dropdown para categorias
-                Text(
-                  "Categoria: Alimentação",
-                  style: TextStyle(color: Colors.blue),
+                DropdownButton<CategoryType>(
+                  value: _selectedCategory,
+                  items: CategoryType.values.map((CategoryType category) {
+                    return DropdownMenuItem<CategoryType>(
+                      value: category,
+                      child: Text(
+                        category.label,
+                        style: TextStyle(
+                          color: category.color,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (CategoryType? newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        _selectedCategory = newValue;
+                      });
+                    }
+                  },
                 ),
                 ElevatedButton.icon(
                   onPressed: () {},
