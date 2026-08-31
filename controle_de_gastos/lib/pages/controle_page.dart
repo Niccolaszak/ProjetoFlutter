@@ -17,7 +17,8 @@ class ControlePage extends StatefulWidget {
 class _ControlePageState extends State<ControlePage> {
   // Controladores funcionam como ponte entre o widget de entrada de texto (TextField) e o código Dart, permitindo ler e manipular o conteúdo digitado pelo usuário.
   final TextEditingController descriptionController = TextEditingController(); // Controlador para ler o campo de descrição do gasto
-  final TextEditingController amountController = TextEditingController(); // Controlador para ler o campo de valor do gasto
+  final TextEditingController amountController =
+      TextEditingController(); // Controlador para ler o campo de valor do gasto
 
   // Categoria padrão selecionada no Dropdown
   CategoryType _selectedCategory = CategoryType.alimentacao;
@@ -42,7 +43,7 @@ class _ControlePageState extends State<ControlePage> {
     return numbers;
   }
 
-  // Lê os campos de entrada, trata a formatação de vírgula para ponto e 
+  // Lê os campos de entrada, trata a formatação de vírgula para ponto e
   // adiciona um novo registro no início (topo) da lista de gastos.
   // Também limpa os campos de texto após a inserção bem-sucedida.
   void adicionarGasto() {
@@ -78,17 +79,17 @@ class _ControlePageState extends State<ControlePage> {
   // Calcula o valor total de todos os gastos registrados na lista.
   // O método .fold itera sobre a lista somando os valores de forma eficiente.
   double calcularTotal() {
-    return expenses.fold(0.0, (soma, item) => soma + item.amount); 
+    return expenses.fold(0.0, (soma, item) => soma + item.amount);
     //O .fold percorre a lista e acumula o valor total dos gastos, iniciando com 0.0 e somando cada valor dos items.
   }
-  
-  // Filtra a lista de gastos por uma categoria específica usando .where() 
+
+  // Filtra a lista de gastos por uma categoria específica usando .where()
   // e em seguida soma o valor total apenas dos itens filtrados.
   double totalCategoria(CategoryType categoria) {
     return expenses
         .where((item) => item.category == categoria)
         .fold(0.0, (soma, item) => soma + item.amount);
-        //O .where filtra os itens da lista que correspondem à categoria especificada, e o .fold soma os valores desses itens filtrados.
+    //O .where filtra os itens da lista que correspondem à categoria especificada, e o .fold soma os valores desses itens filtrados.
   }
 
   @override
@@ -116,7 +117,7 @@ class _ControlePageState extends State<ControlePage> {
                   ),
                 ),
               ).then((_) {
-                // Atualiza a tela principal (os cartões de totais) 
+                // Atualiza a tela principal (os cartões de totais)
                 // quando o usuário retorna da tela de histórico.
                 setState(() {});
               });
@@ -128,134 +129,137 @@ class _ControlePageState extends State<ControlePage> {
       ),
 
       // Conteúdo principal da página
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            SummaryCard(
-              title: "Gasto Total",
-              amount: calcularTotal().toStringAsFixed(2).replaceAll(".", ","),
-              color: Colors.red,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: SummaryCard(
-                    title: CategoryType.alimentacao.label,
-                    amount: totalCategoria(CategoryType.alimentacao)
-                        .toStringAsFixed(2)
-                        .replaceAll(".", ","),
-                    color: CategoryType.alimentacao.color,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              SummaryCard(
+                title: "Gasto Total",
+                amount: calcularTotal().toStringAsFixed(2).replaceAll(".", ","),
+                color: Colors.red,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: SummaryCard(
+                      title: CategoryType.alimentacao.label,
+                      amount: totalCategoria(CategoryType.alimentacao)
+                          .toStringAsFixed(2)
+                          .replaceAll(".", ","),
+                      color: CategoryType.alimentacao.color,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: SummaryCard(
-                    title: CategoryType.transporte.label,
-                    amount: totalCategoria(CategoryType.transporte)
-                        .toStringAsFixed(2)
-                        .replaceAll(".", ","),
-                    color: CategoryType.transporte.color,
+                  Expanded(
+                    child: SummaryCard(
+                      title: CategoryType.transporte.label,
+                      amount: totalCategoria(CategoryType.transporte)
+                          .toStringAsFixed(2)
+                          .replaceAll(".", ","),
+                      color: CategoryType.transporte.color,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: SummaryCard(
-                    title: CategoryType.lazer.label,
-                    amount: totalCategoria(CategoryType.lazer)
-                        .toStringAsFixed(2)
-                        .replaceAll(".", ","),
-                    color: CategoryType.lazer.color,
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: SummaryCard(
+                      title: CategoryType.lazer.label,
+                      amount: totalCategoria(CategoryType.lazer)
+                          .toStringAsFixed(2)
+                          .replaceAll(".", ","),
+                      color: CategoryType.lazer.color,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: SummaryCard(
-                    title: CategoryType.outros.label,
-                    amount: totalCategoria(CategoryType.outros)
-                        .toStringAsFixed(2)
-                        .replaceAll(".", ","),
-                    color: CategoryType.outros.color,
+                  Expanded(
+                    child: SummaryCard(
+                      title: CategoryType.outros.label,
+                      amount: totalCategoria(CategoryType.outros)
+                          .toStringAsFixed(2)
+                          .replaceAll(".", ","),
+                      color: CategoryType.outros.color,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Divider(),
+                ],
+              ),
+              SizedBox(height: 16),
+              Divider(),
 
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    controller: descriptionController,
-                    decoration: InputDecoration(
-                      labelText: "Descrição",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  flex: 1,
-                  child: TextField(
-                    controller: amountController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: "Valor",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // DropdownButton para selecionar a categoria do gasto, preenchido com os valores do enum CategoryType.
-                DropdownButton<CategoryType>(
-                  value: _selectedCategory,
-                  // Cria uma lista de DropdownMenuItem para cada categoria do enum CategoryType.
-                  items: CategoryType.values.map((CategoryType category) {
-                    return DropdownMenuItem<CategoryType>(
-                      value: category,
-                      child: Text(
-                        category.label,
-                        style: TextStyle(
-                          color: category.color,
-                          fontWeight: FontWeight.bold,
-                        ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: TextField(
+                      controller: descriptionController,
+                      decoration: InputDecoration(
+                        labelText: "Descrição",
+                        border: OutlineInputBorder(),
                       ),
-                    );
-                  }).toList(),
-                  onChanged: (CategoryType? newValue) {
-                    if (newValue != null) {
-                      setState(() {
-                        _selectedCategory = newValue;
-                      });
-                    }
-                  },
-                ),
-                ElevatedButton.icon(
-                  onPressed: adicionarGasto,
-                  icon: Icon(Icons.add),
-                  label: Text("Adicionar"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    flex: 1,
+                    child: TextField(
+                      controller: amountController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: "Valor",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // DropdownButton para selecionar a categoria do gasto, preenchido com os valores do enum CategoryType.
+                  DropdownButton<CategoryType>(
+                    value: _selectedCategory,
+                    // Cria uma lista de DropdownMenuItem para cada categoria do enum CategoryType.
+                    items: CategoryType.values.map((CategoryType category) {
+                      return DropdownMenuItem<CategoryType>(
+                        value: category,
+                        child: Text(
+                          category.label,
+                          style: TextStyle(
+                            color: category.color,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (CategoryType? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          _selectedCategory = newValue;
+                        });
+                      }
+                    },
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: adicionarGasto,
+                    icon: Icon(Icons.add),
+                    label: Text("Adicionar"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
 
-            Divider(),
-            SizedBox(height: 8),
+              Divider(),
+              SizedBox(height: 8),
 
-            // Lista de gastos limitada a 7 itens, com opção de exclusão de cada gasto
-            Expanded(
-              child: ListView.builder(
+              // Lista de gastos limitada a 7 itens, com opção de exclusão de cada gasto
+              ListView.builder(
+                shrinkWrap:
+                    true, // Faz a lista ocupar apenas o tamanho dos itens
+                physics: const NeverScrollableScrollPhysics(), // Desativa a rolagem da lista (pois a tela toda já vai rolar)
                 // Limita a exibição a 7 itens usando a função min() da biblioteca dart:math para garantir que não ultrapasse o tamanho da lista de gastos.
                 itemCount: min(expenses.length, 7),
                 itemBuilder: (context, index) {
@@ -275,8 +279,8 @@ class _ControlePageState extends State<ControlePage> {
                   );
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
