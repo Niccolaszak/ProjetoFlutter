@@ -3,6 +3,8 @@ import 'package:controle_de_gastos/widgets/expense_tile.dart';
 import 'package:controle_de_gastos/widgets/summary_card.dart';
 import 'package:flutter/material.dart';
 import 'package:controle_de_gastos/models/expense.dart';
+import 'package:controle_de_gastos/pages/historic_page.dart';
+
 import 'dart:math';
 
 class ControlePage extends StatefulWidget {
@@ -86,7 +88,28 @@ class _ControlePageState extends State<ControlePage> {
           "Controle de Gastos",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.pie_chart))],
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HistoricPage(
+                    expenses: expenses,
+                    onDeleteExpense: (gastoParaRemover) {
+                      setState(() {
+                        expenses.remove(gastoParaRemover);
+                      });
+                    },
+                  ),
+                ),
+              ).then((_) {
+                setState(() {});
+              });
+            },
+            icon: Icon(Icons.pie_chart),
+          ),
+        ],
         backgroundColor: Colors.green,
       ),
       body: Padding(
@@ -215,7 +238,7 @@ class _ControlePageState extends State<ControlePage> {
 
             Expanded(
               child: ListView.builder(
-                itemCount: min(expenses.length,7),
+                itemCount: min(expenses.length, 7),
                 itemBuilder: (context, index) {
                   final gasto = expenses[index];
 

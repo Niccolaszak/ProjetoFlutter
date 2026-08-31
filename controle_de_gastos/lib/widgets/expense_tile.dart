@@ -35,7 +35,35 @@ class ExpenseTile extends StatelessWidget {
               "R\$ $amount",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            IconButton(onPressed: onDelete, icon: Icon(Icons.delete, color: Colors.red,))
+            IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: ((context) => AlertDialog(
+                    title: Text("Excluir Gasto"),
+                    content: Text("Tem certeza que deseja excluir este gasto?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: Text("Cancelar"),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: Text(
+                          "Excluir",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  )),
+                ).then((confirmado) {
+                  if (confirmado == true) {
+                    onDelete();
+                  }
+                });
+              },
+              icon: Icon(Icons.delete, color: Colors.red),
+            ),
           ],
         ),
       ),
