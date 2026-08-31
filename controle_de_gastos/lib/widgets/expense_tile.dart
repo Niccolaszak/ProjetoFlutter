@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
+
+
+// Widget customizado reutilizável que representa a interface de um único gasto na lista.
+// Por ser um StatelessWidget, ele apenas recebe os dados e os desenha na tela.
 class ExpenseTile extends StatelessWidget {
+  // Recebe os dados visuais do gasto e uma função de callback (VoidCallback).
+  // O callback permite que o tile avise a tela principal quando o botão de deletar for confirmado.
   final String description;
   final String amount;
   final String categoryName;
@@ -37,6 +43,8 @@ class ExpenseTile extends StatelessWidget {
             ),
             IconButton(
               onPressed: () {
+                // Abre um pop-up (Dialog) para evitar exclusões acidentais.
+                // O Navigator.pop devolve 'false' para Cancelar e 'true' para Excluir.
                 showDialog(
                   context: context,
                   builder: ((context) => AlertDialog(
@@ -57,6 +65,8 @@ class ExpenseTile extends StatelessWidget {
                     ],
                   )),
                 ).then((confirmado) {
+                  // Captura o retorno do Dialog. Se o usuário confirmou (true),
+                  // dispara a função de exclusão passada lá pela tela principal/histórico.
                   if (confirmado == true) {
                     onDelete();
                   }

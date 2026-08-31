@@ -15,9 +15,9 @@ class ControlePage extends StatefulWidget {
 }
 
 class _ControlePageState extends State<ControlePage> {
-  // Controladores para ler os TextFields
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController amountController = TextEditingController();
+  // Controladores funcionam como ponte entre o widget de entrada de texto (TextField) e o código Dart, permitindo ler e manipular o conteúdo digitado pelo usuário.
+  final TextEditingController descriptionController = TextEditingController(); // Controlador para ler o campo de descrição do gasto
+  final TextEditingController amountController = TextEditingController(); // Controlador para ler o campo de valor do gasto
 
   // Categoria padrão selecionada no Dropdown
   CategoryType _selectedCategory = CategoryType.alimentacao;
@@ -25,6 +25,9 @@ class _ControlePageState extends State<ControlePage> {
   // Lista que vai armazenar todos os gastos
   List<Expense> expenses = [];
 
+  // Extrai apenas valores numéricos válidos (com ou sem casas decimais) de uma string.
+  // Utiliza Expressões Regulares (RegExp) para ignorar letras e caracteres especiais,
+  // garantindo a conversão do texto digitado para double.
   List<double> parseNumbers(String expression) {
     RegExp regExp = RegExp(r"[0-9]+\.?[0-9]*");
 
@@ -39,6 +42,9 @@ class _ControlePageState extends State<ControlePage> {
     return numbers;
   }
 
+  // Lê os campos de entrada, trata a formatação de vírgula para ponto e 
+  // adiciona um novo registro no início (topo) da lista de gastos.
+  // Também limpa os campos de texto após a inserção bem-sucedida.
   void adicionarGasto() {
     final String descricao = descriptionController.text;
     final String valorTexto = amountController.text;
@@ -69,20 +75,26 @@ class _ControlePageState extends State<ControlePage> {
     amountController.clear();
   }
 
-  //calcula o valor total dos gastos
+  // Calcula o valor total de todos os gastos registrados na lista.
+  // O método .fold itera sobre a lista somando os valores de forma eficiente.
   double calcularTotal() {
-    return expenses.fold(0.0, (soma, item) => soma + item.amount);
+    return expenses.fold(0.0, (soma, item) => soma + item.amount); 
+    //O .fold percorre a lista e acumula o valor total dos gastos, iniciando com 0.0 e somando cada valor dos items.
   }
-
+  
+  // Filtra a lista de gastos por uma categoria específica usando .where() 
+  // e em seguida soma o valor total apenas dos itens filtrados.
   double totalCategoria(CategoryType categoria) {
     return expenses
         .where((item) => item.category == categoria)
         .fold(0.0, (soma, item) => soma + item.amount);
+        //O .where filtra os itens da lista que correspondem à categoria especificada, e o .fold soma os valores desses itens filtrados.
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // AppBar com título e botão para acessar a tela de histórico de gastos
       appBar: AppBar(
         title: Text(
           "Controle de Gastos",
@@ -104,6 +116,8 @@ class _ControlePageState extends State<ControlePage> {
                   ),
                 ),
               ).then((_) {
+                // Atualiza a tela principal (os cartões de totais) 
+                // quando o usuário retorna da tela de histórico.
                 setState(() {});
               });
             },
@@ -112,6 +126,8 @@ class _ControlePageState extends State<ControlePage> {
         ],
         backgroundColor: Colors.green,
       ),
+
+      // Conteúdo principal da página
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -198,9 +214,10 @@ class _ControlePageState extends State<ControlePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                //adicionar dropdown para categorias
+                // DropdownButton para selecionar a categoria do gasto, preenchido com os valores do enum CategoryType.
                 DropdownButton<CategoryType>(
                   value: _selectedCategory,
+                  // Cria uma lista de DropdownMenuItem para cada categoria do enum CategoryType.
                   items: CategoryType.values.map((CategoryType category) {
                     return DropdownMenuItem<CategoryType>(
                       value: category,
@@ -236,12 +253,13 @@ class _ControlePageState extends State<ControlePage> {
             Divider(),
             SizedBox(height: 8),
 
+            // Lista de gastos limitada a 7 itens, com opção de exclusão de cada gasto
             Expanded(
               child: ListView.builder(
+                // Limita a exibição a 7 itens usando a função min() da biblioteca dart:math para garantir que não ultrapasse o tamanho da lista de gastos.
                 itemCount: min(expenses.length, 7),
                 itemBuilder: (context, index) {
                   final gasto = expenses[index];
-
                   return ExpenseTile(
                     description: gasto.description,
                     amount: gasto.amount
